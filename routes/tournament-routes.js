@@ -30,4 +30,24 @@ router.get("/:id", async (req, res) => {
     }
 }); 
 
+
+router.post("/create/", async (req, res) => {
+    
+
+    try{
+        const tournamentData = req.body;
+
+        if(!tournamentData.name || !tournamentData.url)
+        {
+            return res.status(400).send("Missing required fields: name or url");
+        }
+
+        const newId = await tournamentService.createNewTournament(tournamentData);
+        res.status(201).json({ id: newId, ...tournamentData });
+    }catch(err){
+        console.error("Error in tournament creation route:", err);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
 module.exports = router;
