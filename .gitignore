@@ -137,3 +137,13 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Things I've added
+serverbak.js
+server.key
+server.crt
+anydesk_6.3.0-1_armhf.deb
+anydesk_7.0.0-1_arm64.deb
+nohup.out
+server.csr
+config.js
