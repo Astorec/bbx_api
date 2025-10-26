@@ -147,3 +147,4 @@ anydesk_7.0.0-1_arm64.deb
 nohup.out
 server.csr
 config.js
+*.ps1

@@ -41,4 +41,19 @@ router.get("/u/:username", async (req, res) => {
     }
 });
 
+router.post("/add/", async (req, res) => {
+    try {
+        const players = Array.isArray(req.body) ? req.body : [req.body];
+        if (!players.every(p => p.name)) {
+            return res.status(400).send("Missing required field: name");
+        }
+        const newIds = await playersService.batchAddPlayers(players);
+        res.status(201).json({ ids: newIds });
+    } catch (err) {
+        console.error("Error in player creation route:", err);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+
 module.exports = router;

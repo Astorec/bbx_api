@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router(); 
 
+
+//#region Tournament Routes
+
 // Import your service file
 const tournamentService = require('../services/tournament-service');
+const participantService = require('../services/participant-service');
 
 // Define the route using the router
 router.get("/", async (req, res) => {
@@ -50,4 +54,33 @@ router.post("/create/", async (req, res) => {
     }
 });
 
+//#endregion
+
+//#region Tournament Participants Routes
+router.get("/:id/participants", async (req, res) => {
+    const tournamentId = req.params.id;
+    try {
+        const participants = await participantService.getParticipantsByTournamentId(tournamentId);
+        res.json(participants);
+    } catch (err) {
+        console.error("Error in tournament participants route:", err);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+router.post("/:id/participants/add", async (req, res) => {
+    const tournamentId = req.params.id;
+    // Ensure participants is always an array
+    const participants = Array.isArray(req.body) ? req.body : [req.body];
+
+    try {
+        const addedCount = await participantService.batchAddParticipants(participants);
+        res.status(201).json({ added: addedCount });
+    } catch (err) {
+        console.error("Error in tournament participants add route:", err);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+//#endregion
 module.exports = router;
