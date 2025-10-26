@@ -1,6 +1,5 @@
 const pool = require("../connection");
 
-
 //#region Tournament Related Calls
 async function getParticipantsByTournamentId(tournamentId) {
     return new Promise((resolve, reject) => {

@@ -1,12 +1,15 @@
 const express = require('express');
 const router = express.Router(); 
 
+//#region Services
 
-//#region Tournament Routes
-
-// Import your service file
 const tournamentService = require('../services/tournament-service');
 const participantService = require('../services/participant-service');
+const matchService = require('../services/match-service');
+
+//#endregion
+
+//#region Tournament Routes
 
 // Define the route using the router
 router.get("/", async (req, res) => {
@@ -78,6 +81,32 @@ router.post("/:id/participants/add", async (req, res) => {
         res.status(201).json({ added: addedCount });
     } catch (err) {
         console.error("Error in tournament participants add route:", err);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+//#endregion
+
+//#region Touranment Matches Routes
+router.get("/:id/matches", async (req, res) => {
+    const tournamentId = req.params.id;
+    try {
+        const matches = await matchService.getMatchesByTournamentId(tournamentId);
+        res.json(matches);
+    } catch (err) {
+        console.error("Error in tournament matches route:", err);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+router.post("/:id/matches/update", async (req, res) => {
+    const tournamentId = req.params.id;
+    const matches = Array.isArray(req.body) ? req.body : [req.body];
+    try {
+        const updatedCount = await matchService.batchUpdateMatches(matches);
+        res.json({ updated: updatedCount });
+    } catch (err) {
+        console.error("Error in tournament matches update route:", err);
         res.status(500).send("Internal Server Error");
     }
 });
