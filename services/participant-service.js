@@ -12,6 +12,17 @@ async function getParticipantsByTournamentId(tournamentId) {
     });
 }
 
+async function getParticipantsByPlayerDbId(playerDbId) {
+    return new Promise((resolve, reject) => {
+        pool.query("SELECT * FROM tblParticipants WHERE player_db_id = ?", [playerDbId], (err, rows) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+        });
+    });
+}
+
 // Batch add participants to a tournament instead of adding one at a time.
 // This will be useful for when we are importing existing tournament data from
 // challonge. Typically would just be one at a time if the tournament was 
@@ -34,5 +45,6 @@ async function batchAddParticipants(participants) {
 
 module.exports = {
     batchAddParticipants,
+    getParticipantsByPlayerDbId,
     getParticipantsByTournamentId
 };

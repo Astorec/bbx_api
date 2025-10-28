@@ -1,6 +1,6 @@
 const pool = require("../connection");
 
-function getAllPlayers(callback) {
+async function getAllPlayers() {
     return new Promise((resolve, reject) => {
         pool.query("SELECT * FROM tblPlayers", (err, rows) => {
             if (err) {
@@ -12,7 +12,7 @@ function getAllPlayers(callback) {
 }
 
 // This should be used when doing calls from other services
-function getPlayerById(playerId, callback) {
+async function getPlayerById(playerId) {
     return new Promise((resolve, reject) => {
         pool.query("SELECT * FROM tblPlayers WHERE id = ?", [playerId], (err, rows) => {
             if (err) {
@@ -23,7 +23,7 @@ function getPlayerById(playerId, callback) {
     });
 }
 
-function getPlayerByUsername(username, callback) {
+async function getPlayerByUsername(username) {
     return new Promise((resolve, reject) => {
         pool.query("SELECT * FROM tblPlayers WHERE username = ?", [username], (err, rows) => {
             if (err) {

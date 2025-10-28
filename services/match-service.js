@@ -1,6 +1,6 @@
 const pool = require("../connection");
 
-function getAllMatches(tournament_id, callback) {
+async function getAllMatches(tournament_id) {
     return new Promise((resolve, reject) => {
         pool.query("SELECT * FROM tblMatches WHERE tournament_id = ?", [tournament_id], (err, rows) => {
             if (err) {
@@ -11,7 +11,7 @@ function getAllMatches(tournament_id, callback) {
     });
 }
 
-function batchAddMatches(matches) {
+async function batchAddMatches(matches) {
     return new Promise((resolve, reject) => {
         const values = matches.map(m => [m.player1_id, m.player2_id, m.tournament_id, m.is_finals, m.match_id, m.round]);
         const query = "INSERT INTO tblMatches (player1_id, player2_id, tournament_id, is_finals, match_id, round) VALUES ?";
@@ -46,5 +46,6 @@ async function batchUpdateMatches(matches) {
 
 module.exports = {
     getAllMatches,
+    batchUpdateMatches,
     batchAddMatches
 };

@@ -1,7 +1,7 @@
 const pool = require("../connection");
 const scriptUtils = require('../utils/getscripts');
 
-function getMainLeaderboard(callback) {
+async function getMainLeaderboard() {
     return new Promise((resolve, reject) => {
         const script = scriptUtils.getScript('./services/mainboard_sql_script.txt');
         pool.query(script, (err, rows) => {

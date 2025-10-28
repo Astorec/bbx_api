@@ -37,8 +37,23 @@ router.get("/:id", async (req, res) => {
     }
 }); 
 
+router.get("/url/:url", async (req, res) => {
+    const tournamentUrl = req.params.url;
+    try {
+        const tournament = await tournamentService.getTournamentByUrl(tournamentUrl);
+        if (!tournament) {
+            return res.status(404).send("Tournament not found");
+        }
+        res.json(tournament);
+    }
+    catch (err) {
+        console.error("Error in tournament by URL route:", err);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
-router.post("/create/", async (req, res) => {
+
+router.post("/create", async (req, res) => {
     
 
     try{
@@ -71,6 +86,7 @@ router.get("/:id/participants", async (req, res) => {
     }
 });
 
+
 router.post("/:id/participants/add", async (req, res) => {
     const tournamentId = req.params.id;
     // Ensure participants is always an array
@@ -87,11 +103,11 @@ router.post("/:id/participants/add", async (req, res) => {
 
 //#endregion
 
-//#region Touranment Matches Routes
+//#region Tournament Matches Routes
 router.get("/:id/matches", async (req, res) => {
     const tournamentId = req.params.id;
     try {
-        const matches = await matchService.getMatchesByTournamentId(tournamentId);
+        const matches = await matchService.getAllMatches(tournamentId);
         res.json(matches);
     } catch (err) {
         console.error("Error in tournament matches route:", err);
