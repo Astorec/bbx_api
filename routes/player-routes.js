@@ -41,7 +41,7 @@ router.get("/u/:username", async (req, res) => {
     }
 });
 
-router.post("/add/", async (req, res) => {
+router.post("/add", async (req, res) => {
     try {
         const players = Array.isArray(req.body) ? req.body : [req.body];
         if (!players.every(p => p.name)) {
@@ -55,5 +55,33 @@ router.post("/add/", async (req, res) => {
     }
 });
 
+router.put("/update/:id", async (req, res) => {
+    const playerId = req.params.id;
+    const playerData = req.body;
+    try {
+        const updated = await playersService.updatePlayer(playerId, playerData);
+        if (!updated) {
+            return res.status(404).send("Player not found");
+        }
+        res.status(200).send("Player updated successfully");
+    } catch (err) {
+        console.error("Error in player update route:", err);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+router.delete("/delete/:id", async (req, res) => {
+    const playerId = req.params.id;
+    try {
+        const deleted = await playersService.deletePlayer(playerId);
+        if (!deleted) {
+            return res.status(404).send("Player not found");
+        }
+        res.status(200).send("Player deleted successfully");
+    } catch (err) {
+        console.error("Error in player deletion route:", err);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
 module.exports = router;

@@ -1,6 +1,8 @@
 const pool = require("../connection");
 
 //#region Tournament Related Calls
+
+// Get participants by tournament ID
 async function getParticipantsByTournamentId(tournamentId) {
     return new Promise((resolve, reject) => {
         pool.query("SELECT * FROM tblParticipants WHERE tournament_id = ?", [tournamentId], (err, rows) => {
@@ -12,6 +14,7 @@ async function getParticipantsByTournamentId(tournamentId) {
     });
 }
 
+// Get participants by player database ID
 async function getParticipantsByPlayerDbId(playerDbId) {
     return new Promise((resolve, reject) => {
         pool.query("SELECT * FROM tblParticipants WHERE player_db_id = ?", [playerDbId], (err, rows) => {
@@ -40,11 +43,70 @@ async function batchAddParticipants(participants) {
         });
     });
 }
+
+// Update participant details
+async function updateParticipant(participant) {
+    return new Promise((resolve, reject) => {
+        const query = "UPDATE tblParticipants SET tournament_id = ?, player_db_id = ?, player_id = ?, group_id = ? WHERE id = ?";
+        const params = [participant.tournament_id, participant.player_db_id, participant.player_id, participant.group_id, participant.id];
+        pool.query(query, params, (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(result.affectedRows > 0);
+        });
+    });
+}
+
+// Delete participant by tournament ID and player database ID
+// Useful when removing a player from a specific tournament
+async function deleteParticipantByTournamentIdAndPlayerDbId(tournamentId, playerDbId) {
+    return new Promise((resolve, reject) => {
+        pool.query("DELETE FROM tblParticipants WHERE tournament_id = ? AND player_db_id = ?", [tournamentId, playerDbId], (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(result.affectedRows > 0);
+        });
+    });
+}
+
+// Delete participant by player database ID
+// Useful when removing a player from all tournaments
+async function deleteParticipantByPlayerDbId(playerDbId) {
+    return new Promise((resolve, reject) => {
+        pool.query("DELETE FROM tblParticipants WHERE player_db_id = ?", [playerDbId], (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(result.affectedRows > 0);
+        });
+    });
+}
+
+// Delete participants by tournament ID
+// Useful when resetting a tournament or deleting it altogether
+async function deleteParticipantsByTournamentId(tournamentId) {
+    return new Promise((resolve, reject) => {
+        pool.query("DELETE FROM tblParticipants WHERE tournament_id = ?", [tournamentId], (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(result.affectedRows > 0);
+        });
+    });
+}
+
+
 //#endregion
 
 
 module.exports = {
     batchAddParticipants,
     getParticipantsByPlayerDbId,
-    getParticipantsByTournamentId
+    getParticipantsByTournamentId,
+    updateParticipant,
+    deleteParticipantByPlayerDbId,
+    deleteParticipantByTournamentIdAndPlayerDbId,
+    deleteParticipantsByTournamentId
 };

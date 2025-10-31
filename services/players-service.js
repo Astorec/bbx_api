@@ -1,5 +1,6 @@
 const pool = require("../connection");
 
+// Get all players
 async function getAllPlayers() {
     return new Promise((resolve, reject) => {
         pool.query("SELECT * FROM tblPlayers", (err, rows) => {
@@ -23,6 +24,7 @@ async function getPlayerById(playerId) {
     });
 }
 
+// Get players by their username
 async function getPlayerByUsername(username) {
     return new Promise((resolve, reject) => {
         pool.query("SELECT * FROM tblPlayers WHERE username = ?", [username], (err, rows) => {
@@ -34,7 +36,7 @@ async function getPlayerByUsername(username) {
     });
 }
 
-
+// Batch add players
 async function batchAddPlayers(players) {
     return new Promise((resolve, reject) => {
         const values = players.map(p => [p.name, p.username, p.region]);

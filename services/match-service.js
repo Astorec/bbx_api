@@ -1,5 +1,6 @@
 const pool = require("../connection");
 
+// Get all matches for a given tournament ID
 async function getAllMatches(tournament_id) {
     return new Promise((resolve, reject) => {
         pool.query("SELECT * FROM tblMatches WHERE tournament_id = ?", [tournament_id], (err, rows) => {
@@ -11,6 +12,7 @@ async function getAllMatches(tournament_id) {
     });
 }
 
+// Batch add matches
 async function batchAddMatches(matches) {
     return new Promise((resolve, reject) => {
         const values = matches.map(m => [m.player1_id, m.player2_id, m.tournament_id, m.is_finals, m.match_id, m.round]);
@@ -24,6 +26,7 @@ async function batchAddMatches(matches) {
     });
 }
 
+// Batch update matches
 async function batchUpdateMatches(matches) {
     return new Promise((resolve, reject) => {
         const updatePromises = matches.map(match => {
@@ -44,8 +47,20 @@ async function batchUpdateMatches(matches) {
     });
 }
 
+async function deleteMatchesByTournamentId(tournamentId) {
+    return new Promise((resolve, reject) => {
+        pool.query("DELETE FROM tblMatches WHERE tournament_id = ?", [tournamentId], (err, result) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(result.affectedRows > 0);
+        });
+    });
+}
+
 module.exports = {
     getAllMatches,
     batchUpdateMatches,
-    batchAddMatches
+    batchAddMatches,
+    deleteMatchesByTournamentId
 };
